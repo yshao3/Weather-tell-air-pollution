@@ -1,0 +1,97 @@
+How to run the code in the code folder:
+
+###################
+webpage_demo folder
+###################
+
+Since we use Pico framework to bridge the Python module and Javascript code, it is needed to install Pico first before you run the demo. Pico can be installed by running "easy_install pico" or "pip install pico". For more details about Pico, please refer to: https://github.com/fergalwalsh/pico
+
+After installing Pico, please cd into the webpage_demo directory and run "python -m pico.server", then input "localhost:8800" in the address bar of a browser to open the weather AQ webpage.
+
+There are two ways for air quality prediction: one way is to manually input weather features in the input boxes, and click on "submit"; another way is to just click on the button "Predict next few days", which will pull weather forecast data from the weather API and do the prediction, and it will take couple of seconds before the prediction results display.
+
+#######################
+data_integration folder
+#######################
+
+1. getweather.py
+Using command line: 
+Python PATHTO getweather.py STARTYAER STARTMONTH STARTDAY ENDYEAR ENDMONTH ENDDAY LOCATION
+For example: 
+Python getweather.py 2016 05 10 2016 05 11 nyc
+Please go to https://www.wunderground.com/ to find out which format of location you can use. (It can be zip code or city names)
+
+2. merge.py
+Using command line: 
+Python PATHTO merge.py PATHTO AQ.csv PATHTO Cityweather.csv Location
+For example:
+Python merge.py bostonaq.csv bostonweather.csv boston
+It will generate several csv files based on pollution parameter and location 
+
+#######################
+regression_model folder
+#######################
+
+Sample data is provided for the multiple linear regression model and logistic regression model. To run the model, 
+please cd into the regression_model directory, and run "python log_reg.py sample_data/pm25_train.csv sample_data/pm25_test.csv" or "python multi_reg.py sample_data/co_train.csv sample_data/co_test.csv"
+
+################
+svm_model folder
+################
+
+1. svm.py
+Using command line: Python PATHTO svm.py PATHTO merged.csv
+For example:
+Python svm.py sample_data/bostonco.csv
+It gives the accuracy for 5 different folders with different kernel method.
+
+2. svmroc.py
+Using command line: Python PATHTO svmroc.py PATHTO merged.csv
+For example:
+Python svmroc.py sample_data/bostonco.csv
+It will print the roc curves for the air quality prediction models with different number of features.
+
+#####################
+visualizations folder
+#####################
+
+1. scatter_plot.py
+The scatter_plot file is to plot the air quality data with two weather features as axes. To change weather features, one need to change the column numbers on line 81 and 82.
+Using command line: python scatter_plot.py
+
+2. plot_roc.py
+Using command line: python plot_roc.py
+
+##########################
+rondom_forest_model folder
+##########################
+
+Sample data is provided in sample_data folder.
+Using command line: python SimpleForestRegressor.py
+
+Random Forest:
+There are three random forest algorithms included. DF1 and DF2 are pretty much the
+same, but where on slightly different data. The SimpleRandomForest is the bear bones
+used for predicting for the future.
+Feature Importance is printed in the following order:
+weather, temp, hum, windspeed, pressure, vis, change
+I looked at: https://www.kaggle.com/c/digit­recognizer/forums/t/2299/getting­started-
+python­sample­code­random­forest to understand how to run the random forest.
+
+We have four csv files with predictions for Houston produced in testing in the zip as a sample.  The predictions should be for every measurement cycle (the match up with the data).  These predictions where compared to the actual pollution values.
+
+#####################
+weather_change folder
+#####################
+To calculate the percent change:
+First, use the getAQ.py file, adjust the parameters in the code to the desired location by editing the payload variable. The file will generate files for every pollutant in the selected area. These files should then be passed to the 'calcchange.py' file, which requires editing the input filename to be the correct location code. Then, the get request to the weather API should be edited so that the region corresponds to the region in the input files. It will then output files with the date, pollutant reading, and weather parameters
+on each row. These will be named "change'city''pollutant'.csv". They will only be generated if there are more than 40 distinct pollutant readings in the input files. The output change files are then passed to the machine learning code to generate/test models.
+
+
+
+
+
+
+
+
+
